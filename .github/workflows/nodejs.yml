@@ -28,11 +28,3 @@ jobs:
           SECRET: ilikecake
           REACT_APP_TMDB_KEY: f84d47c06e7e7fc9b52da9eb26d58210
         working-directory: movies-api
-      - run: npm run client
-        working-directory: movies-api
-      - name: Build frontend
-        run: |
-          cd reactApp
-          npm install
-          npm run build
-          mv build ../movies-api/client
