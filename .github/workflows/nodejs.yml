@@ -1,0 +1,38 @@
+name: Node.js CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install
+        working-directory: movies-api
+      - run: npm run test
+        env:
+          MONGO_DB: mongodb+srv://asdf:asdf@test.kgyv4wt.mongodb.net/movies_db
+          SECRET: ilikecake
+          REACT_APP_TMDB_KEY: f84d47c06e7e7fc9b52da9eb26d58210
+        working-directory: movies-api
+      - run: npm run build
+        working-directory: movies-api
+      - name: Build frontend
+        run: |
+          cd reactApp
+          npm install
+          npm run build
+          mv build ../movies-api/client
