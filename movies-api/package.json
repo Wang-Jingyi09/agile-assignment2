@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "babel-node ./initialise-dev/initDevDB.js && nodemon --exec npm start",
-    "test": "jest",
+    "test": "jest --verbose",
     "build": "babel . --out-dir dist --ignore node_modules,tests,*.test.js,dist"
   },
   "author": "Jingyi Wang",

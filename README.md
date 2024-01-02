@@ -1,80 +1,78 @@
-# Asssignment2 - Web API
+# Movie API Documentation
 
-Name: Jingyi Wang
+## Overview
+This API provides access to a variety of movie-related data. 
+It integrates with The Movie Database (TMDB) for comprehensive movie information. 
+Below is a list of available endpoints and their functionality.
 
-# Features
+## Endpoints
 
-A bullet-point list of the ADDITIONAL features you have implemented in the API **THAT WERE NOT IN THE LABS** (or modifications to existing features)
- 
- + Add several additional API endpoints, and some of them use parameterised URL that can fetch from TMDB/Mongo
- + Frontend and backend apps are connected
- + Several additional API endpoints are called from frontend app
- + Signup and login included in site header
- + Some routes are protected (only visible when logging in)
- + Improve validation of username and passwords, and the error messages will be displayed on frontend.
+### Local Movie Data
+- `GET /api/users` - Retrieve a list of all users registered in the system.
+- `POST /api/users?action=register` - Register a new user. Requires username and password in the request body.
+- `POST /api/users?action=login` - Authenticate a user. Requires username and password in the request body.
+- `PUT /api/users/:id` - Update user information. Requires user ID in the path and update details in the request body.
+- `GET /` - Paginated retrieval of movies from the local database. Supports `page` and `limit` query parameters for pagination.
+- `GET /:id` - Retrieve the details of a specific movie from the local database by its ID.
 
-## Setup requirements.
+### TMDB Integration
+- `GET /tmdb/movies` - Get a list of movies from TMDB's Discover endpoint. Supports filtering by `year`, `rating`, and pagination using `page`.
+- `GET /tmdb/movie/:id` - Get the details of a specific movie from TMDB by its ID.
+- `GET /tmdb/upcoming` - Retrieve a list of upcoming movies from TMDB. Supports pagination using `page`.
+- `GET /tmdb/movies/:id/images` - Get images for a specific movie from TMDB by its ID.
+- `GET /tmdb/latest` - Retrieve the latest movies from TMDB.
+- `GET /tmdb/top_rated` - Retrieve top-rated movies from TMDB.
+- `GET /tmdb/trending` - Retrieve trending movies from TMDB.
+- `GET /tmdb/movies/:id/recommendations` - Get movie recommendations based on a specific movie ID from TMDB.
+- `GET /tmdb/movies/:id/reviews` - Get reviews for a specific movie from TMDB by its ID.
+- `GET /tmdb/movies/:id/credits` - Get credits (cast and crew) for a specific movie from TMDB by its ID.
 
-[ Outline any non-standard setup steps necessary to run your app locally after cloning the repo.]
+### Authentication Required
+The following endpoints require authentication:
+- `POST /api/users?action=login`
+- `PUT /api/users/:id`
 
-1. The main branch that tries to push to github contains some previously local submissions.
-The error message fatal: refusing to merge unrelated histories indicates that Git has detected that the local and remote repositories have diverged in such a way that they do not share a common base commit. The error message "Committing is not possible because you have unmerged files." indicates that a file conflict was not resolved when I merged. Git cannot commit because there are unmerged files.
+## Automated Testing
 
-`git pull origin main --allow-unrelated-histories`
-`git commit -m "Resolve conflicts and merge unrelated histories"`
-`git push origin main`
+    User API Tests
+    GET /api/users                                                                                                                                                                                                                  
+      √ should return all users (7570 ms)                                                                                                                                                                                           
+    POST /api/users                                                                                                                                                                                                                 
+      √ should register a new user (1244 ms)                                                                                                                                                                                        
+      √ should return error for missing username or password (727 ms)                                                                                                                                                               
+      √ should authenticate an existing user (1563 ms)                                                                                                                                                                              
+      √ should return error for invalid password (1109 ms)                                                                                                                                                                          
+    PUT /api/users/:id                                                                                                                                                                                                              
+      √ should update an existing user (1570 ms)                                                                                                                                                                                    
+      √ should return error for non-existent user (1039 ms)
 
-## API Configuration
-______________________
+    Movie API Tests
+    GET /api/movies
+      √ should return paginated movies (11792 ms)
+    GET /api/movies/:id                                                                                                                                                                                                             
+      √ should return a specific movie (4047 ms)                                                                                                                                                                                    
+    GET /api/movies/tmdb/movies                                                                                                                                                                                                     
+      √ should return movies from TMDB (3579 ms)                                                                                                                                                                                    
+    GET /api/movies/tmdb/movie/:id                                                                                                                                                                                                  
+      √ should return a specific movie from TMDB (3858 ms)                                                                                                                                                                          
+    GET /api/movies/tmdb/upcoming                                                                                                                                                                                                   
+      √ should return upcoming movies from TMDB (4358 ms)                                                                                                                                                                           
+    GET /api/movies/tmdb/movies/:id/images                                                                                                                                                                                          
+      √ should return movie images from TMDB (3187 ms)                                                                                                                                                                              
+    GET /api/movies/tmdb/latest                                                                                                                                                                                                     
+      √ should return the latest movies from TMDB (3340 ms)                                                                                                                                                                         
+    GET /api/movies/tmdb/top_rated                                                                                                                                                                                                  
+      √ should return top-rated movies from TMDB (3534 ms)                                                                                                                                                                          
+    GET /api/movies/tmdb/trending                                                                                                                                                                                                   
+      √ should return trending movies from TMDB (1729 ms)                                                                                                                                                                           
+    GET /api/movies/tmdb/movies/:id/recommendations                                                                                                                                                                                 
+      √ should return movie recommendations from TMDB (1796 ms) 
 
-NODE_ENV=development
-PORT=8080
-HOST=localhost
-MONGO_DB=MongoURL
-TMDB_KEY=tmdb_key
-SECRET=JWTSecret       
-______________________
+    Test Suites: 2 passed, 2 total
+    Tests:       17 passed, 17 total
+    Snapshots:   0 total
+    Time:        44.239 s
+    Ran all test suites.
 
-
-## API Design
-
-### [actors]
-- '/api/actors/tmdb/movies/:id/credits' | GET | Gets a list of actors with a link below to navigate details page to actors
-
-### [genres]
-- '/api/genres/tmdb/genres' | GET | Gets all movie genres
-
-### [movies]
-- '/api/movies/tmdb/movies' | GET | Gets a list of movies 
-- '/api/movies/{id}' | GET | Gets a single movie 
-- '/api/movies/tmdb/upcoming' | GET | Gets upcoming movies
-- '/api/movies/tmdb/movies/{id}/images' | GET | Gets images of a single movie 
-- '/api/movies/tmdb/latest' | GET | Gets latest movies
-- '/api/movies/tmdb/top_rated' | GET | Gets top_rated movies 
-- '/api/movies/tmdb/trending' | GET | Gets trending movies
-- '/api/movies/movies/{id}/recommendations' | GET | Gets recommended movies of a single movie 
-
-
-### [reviews]
-- '/api/reviews/{id}/reviews' | GET | Gets all reviews for a movie 
-- '/api/reviews/{id}/reviews' | POST | Create a new review for a Movie 
-
-### [users]
-
-- '/api/users/' | GET | Gets all users
-- '/api/users/' | POST | Creates a user
-- '/api/users/{id}' | PUT | Updates a user
-
-
-If you have your API design on an online platform or graphic, please link to it (e.g. [Swaggerhub](https://app.swaggerhub.com/)).
-
-## Security and Authentication
-
-Authentication is utilized to manage user sessions like favorite page.
-
-## Integrating with React App
-
-+ Integrate the package.json in react app (npm install)
-+ Integrate the source code from assignment 1.
-+ Several additional API endpoints are called from frontend app
-+ When a user attempts to access a protected page, they are redirected to the login page.
+## Deployments
+    https://movie-assignment-2-6033f3e81df0.herokuapp.com/

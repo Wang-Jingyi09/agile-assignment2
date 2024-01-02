@@ -13,7 +13,7 @@
     "build-all": "cd movies-api && npm run build && cd .. && cd reactApp && npm run build && cd .. && mv reactApp/build movies-api/dist",
     "install": "npm run install-all",
     "start": "node movies-api/dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd movies-api && npm test"
   },
   "keywords": [],
   "author": "",
